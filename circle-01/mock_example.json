@@ -1,0 +1,87 @@
+{
+  "customer_raw_input": "我们律所每天要审很多份合同，都是 Word 和 PDF，律师要逐条看有没有风险条款，很花时间，有时候会漏掉。",
+  "industry": "法律服务",
+  "business_function": "合同审查",
+  "scenario": "律师对incoming合同做风险条款逐条审查",
+
+  "pain_points": [
+    {
+      "description": "合同格式异构（Word 与 PDF），需人工逐份打开阅读",
+      "source": "explicit",
+      "quote": "都是 Word 和 PDF"
+    },
+    {
+      "description": "逐条人工审查耗时",
+      "source": "explicit",
+      "quote": "律师要逐条看有没有风险条款，很花时间"
+    },
+    {
+      "description": "存在遗漏风险",
+      "source": "explicit",
+      "quote": "有时候会漏掉"
+    },
+    {
+      "description": "遗漏可能带来法律责任与赔偿，因此审查结果需要可追溯的依据",
+      "source": "inferred",
+      "confidence": 0.75
+    }
+  ],
+
+  "desired_outcomes": [
+    {
+      "description": "缩短单份合同的审查时间",
+      "source": "explicit",
+      "quote": "很花时间"
+    },
+    {
+      "description": "降低风险条款被遗漏的概率",
+      "source": "explicit",
+      "quote": "有时候会漏掉"
+    },
+    {
+      "description": "审查结论需要附带可追溯的条款引用位置，以便律师复核",
+      "source": "inferred",
+      "confidence": 0.7
+    }
+  ],
+
+  "constraints": [
+    {
+      "category": "data_sensitivity",
+      "value": "合同属客户机密，含商业秘密与个人隐私，很可能不允许上传公有云模型",
+      "source": "inferred",
+      "confidence": 0.85
+    },
+    {
+      "category": "deployment",
+      "value": "unknown",
+      "source": "inferred",
+      "confidence": 0.0
+    },
+    {
+      "category": "volume",
+      "value": "客户只说'每天很多份'，未给具体量级",
+      "source": "explicit",
+      "quote": "每天要审很多份合同"
+    },
+    {
+      "category": "integration",
+      "value": "unknown",
+      "source": "inferred",
+      "confidence": 0.0
+    }
+  ],
+
+  "data_assets": ["Word 合同", "PDF 合同"],
+
+  "current_workflow": [
+    "接收 incoming 合同",
+    "律师人工打开逐份阅读",
+    "逐条比对是否存在风险条款",
+    "出具审查意见"
+  ],
+
+  "decision_owner": "执业律师（最终法律意见必须由人签发）",
+
+  "automation_boundary": "可自动化：文档解析、条款切分、风险条款初筛与定位、生成待审清单与引用依据。必须人工：风险定性、法律后果判断、最终意见签发。系统只输出候选风险点与证据位置，不做终局判定。"
+}

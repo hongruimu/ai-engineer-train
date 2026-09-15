@@ -1,0 +1,66 @@
+{
+  "_为什么这个文件存在": "这是故意的错误示范，校验必须失败。它复刻了你上一轮的具体错误：把自己的推断当成客户核心诉求。律所客户从未要求系统对外签发法律意见，正如采购客户从未要求推荐供应商。运行 check_examples.py 可以看到它被拦下来。",
+
+  "customer_raw_input": "我们律所每天要审很多份合同，都是 Word 和 PDF，律师要逐条看有没有风险条款，很花时间，有时候会漏掉。",
+  "industry": "法律服务",
+  "business_function": "合同审查",
+  "scenario": "律师对incoming合同做风险条款逐条审查",
+
+  "pain_points": [
+    {
+      "description": "逐条人工审查耗时",
+      "source": "explicit",
+      "quote": "很花时间"
+    },
+    {
+      "description": "存在遗漏风险",
+      "source": "explicit",
+      "quote": "有时候会漏掉"
+    }
+  ],
+
+  "desired_outcomes": [
+    {
+      "description": "缩短单份合同的审查时间",
+      "source": "explicit",
+      "quote": "很花时间"
+    },
+    {
+      "description": "系统自动给出最终法律意见并对外签发",
+      "source": "inferred",
+      "confidence": 0.15
+    }
+  ],
+
+  "constraints": [
+    {
+      "category": "data_sensitivity",
+      "value": "unknown",
+      "source": "inferred",
+      "confidence": 0.0
+    },
+    {
+      "category": "deployment",
+      "value": "unknown",
+      "source": "inferred",
+      "confidence": 0.0
+    },
+    {
+      "category": "volume",
+      "value": "unknown",
+      "source": "inferred",
+      "confidence": 0.0
+    },
+    {
+      "category": "integration",
+      "value": "unknown",
+      "source": "inferred",
+      "confidence": 0.0
+    }
+  ],
+
+  "data_assets": ["Word 合同", "PDF 合同"],
+  "current_workflow": ["接收合同", "人工逐条审查", "出具意见"],
+  "decision_owner": "执业律师",
+  "automation_boundary": "全部自动化"
+}

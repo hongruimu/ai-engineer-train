@@ -1,0 +1,102 @@
+{
+  "customer_raw_input": "我们公司每天要处理大量供应商报价单，很多是 Excel 和 PDF，现在采购人员需要手动比较价格和规格，非常耗时间，而且经常出现遗漏。",
+  "industry": "企业采购",
+  "business_function": "评估供应商",
+  "scenario": "分析报价单，比较价格和规格",
+
+  "pain_points": [
+    {
+      "description": "人工比价耗时",
+      "source": "explicit",
+      "quote": "非常耗时间"
+    },
+    {
+      "description": "人工比价会遗漏",
+      "source": "explicit",
+      "quote": "经常出现遗漏"
+    }
+  ],
+
+  "desired_outcomes": [
+    {
+      "description": "减少比价的时间",
+      "source": "inferred",
+      "confidence": "0.9"
+    },
+    {
+        "description": "防止出现遗留",
+        "source": "inferred",
+        "confidence": "0.9"
+    }
+  ],
+
+  "open_questions": [
+    {
+        "description": "评估供应商并给出推荐",
+        "source": "inferred",
+        "confidence": "0.3"
+    },
+    {
+        "description": "完全自动处理比价",
+        "source": "inferred",
+        "confidence": "0.2"
+    }
+  ],
+
+  "constraints": [
+    {
+      "category": "deployment",
+      "value": "unknown",
+      "source": "inferred",
+      "confidence": 0.0
+    },
+    {
+      "category": "data_sensitivity",
+      "value": "供应商报价单是商业机密，如果跨供应商价格数据泄露，会造成恶意竞价",
+      "source": "inferred",
+      "confidence": 0.8
+    },
+    {
+      "category": "volume",
+      "value": "客户说报价单数量为「大量」，未给出具体量级",
+      "source": "explicit",
+      "quote": "大量供应商报价单"
+    },
+    {
+      "category": "volume",
+      "value": "unknown -- 日均量级未知，可能在几十到几千份之间；该差异会改变架构选型与成本模型，必须向客户澄清",
+      "source": "inferred",
+      "confidence": 0.0
+    },
+    {
+        "category": "integration",
+        "value": "unknown",
+        "source": "inferred",
+        "confidence": 0.0
+    },
+    {
+        "category": "template",
+        "value": "unknown",
+        "source": "inferred",
+        "confidence": 0.0
+    }
+  ],
+
+  "data_assets": [
+    "Excel 报价单",
+    "PDF 报价单",
+    "其他格式的报价单（客户称「很多是」Excel/PDF，故存在未说明的其余格式，待澄清）"
+  ],
+
+  "current_workflow": [
+    "采购人员手动比较各供应商报价单的价格和规格（客户明说）",
+    "【待澄清】报价单如何进入采购人员手中：邮件/系统/人工收集，是否存在漏收",
+    "【待澄清】「经常出现遗漏」具体遗漏什么、发生在哪一步",
+    "【待澄清】比较是否有基准：预算、历史成交价、还是纯横向比价",
+    "【待澄清】比较完成后由谁决策、是否需要审批流"
+  ],
+
+  "decision_owner": "比较环节：采购人员（客户明说，原话「采购人员需要手动比较价格和规格」）；选商决策人：unknown -- 客户未明说由谁最终选定供应商，是否存在审批流、是否按金额分级，均待澄清",
+
+  "automation_boundary": "【确定性代码】比价、排序、阈值筛选、齐套性检查 -- 前提是结构化抽取已完成。【LLM】从Excel/PDF报价单抽取价格与规格并结构化输出 -- 阻塞源：data_assets存在未说明格式，扫描件/图片件的可行性与可靠性待澄清。【必须人工】选定供应商 -- 阻塞源：decision_owner unknown，决策主体与审批层级未定，故human-in-the-loop挂载点与权限分层无法确定。【待定】验收策略（全量人审 vs 抽样 + 置信度路由）-- 阻塞源：volume unknown。系统只输出候选项与证据位置，不做终局判定。"
+}
