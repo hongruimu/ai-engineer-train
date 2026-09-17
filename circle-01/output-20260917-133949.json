@@ -1,0 +1,147 @@
+{
+  "customer_raw_input": "我们公司每天要处理大量供应商报价单，很多是 Excel 和 PDF，现在采购人员需要手动比较价格和规格，非常耗时间，而且经常出现遗漏。",
+  "industry": "unknown —— 未说明具体行业，仅可推测为有采购业务的企业",
+  "business_function": "采购 / 供应商管理",
+  "scenario": "供应商报价单的价格与规格比较",
+  "pain_points": [
+    {
+      "description": "每天需要处理大量供应商报价单",
+      "source": "explicit",
+      "quote": "每天要处理大量供应商报价单",
+      "confidence": null
+    },
+    {
+      "description": "报价单格式包含 Excel 和 PDF，格式多样",
+      "source": "explicit",
+      "quote": "很多是 Excel 和 PDF",
+      "confidence": null
+    },
+    {
+      "description": "采购人员需要手动比较价格和规格",
+      "source": "explicit",
+      "quote": "现在采购人员需要手动比较价格和规格",
+      "confidence": null
+    },
+    {
+      "description": "手动比较非常耗时间",
+      "source": "explicit",
+      "quote": "非常耗时间",
+      "confidence": null
+    },
+    {
+      "description": "比较过程中经常出现遗漏",
+      "source": "explicit",
+      "quote": "经常出现遗漏",
+      "confidence": null
+    },
+    {
+      "description": "Excel/PDF 等多种格式可能增加解析、字段对齐和人工核对成本",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.8
+    }
+  ],
+  "desired_outcomes": [
+    {
+      "description": "减少采购人员手动比较价格和规格的时间",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.9
+    },
+    {
+      "description": "降低报价比较中遗漏价格或规格的风险",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.9
+    },
+    {
+      "description": "将 Excel/PDF 报价单转为结构化、可对比的数据",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.8
+    },
+    {
+      "description": "提升供应商报价比较的一致性和可追溯性",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.7
+    }
+  ],
+  "open_questions": [
+    {
+      "description": "是否需要系统自动推荐或选定供应商？",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.3
+    },
+    {
+      "description": "报价单模板/字段是否统一，是否包含扫描件或图片型 PDF？",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.4
+    },
+    {
+      "description": "是否需要与 ERP、采购系统或供应商门户集成？",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.4
+    },
+    {
+      "description": "采购人员比较后由谁审批或做出最终选商决策？",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.3
+    }
+  ],
+  "constraints": [
+    {
+      "category": "deployment",
+      "value": "unknown",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.0
+    },
+    {
+      "category": "data_sensitivity",
+      "value": "可能包含供应商价格、规格等商业敏感信息",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.8
+    },
+    {
+      "category": "volume",
+      "value": "每天要处理大量供应商报价单",
+      "source": "explicit",
+      "quote": "每天要处理大量供应商报价单",
+      "confidence": null
+    },
+    {
+      "category": "volume",
+      "value": "unknown —— 具体报价单数量、文件页数/行数、峰值频率未知，直接影响解析吞吐、OCR/LLM 调用成本、批处理与并发设计",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.0
+    },
+    {
+      "category": "integration",
+      "value": "unknown",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.0
+    }
+  ],
+  "data_assets": [
+    "Excel 格式供应商报价单",
+    "PDF 格式供应商报价单",
+    "供应商报价价格数据",
+    "产品/物料规格数据",
+    "【待澄清】报价单字段清单、模板是否统一、是否含扫描图片、是否有历史报价库"
+  ],
+  "current_workflow": [
+    "每天处理大量供应商报价单，其中很多是 Excel 和 PDF",
+    "采购人员手动比较价格和规格",
+    "【待澄清】报价单的收集渠道、录入方式、审核流程、选商决策流程和归档方式"
+  ],
+  "decision_owner": "unknown —— 原话仅说明采购人员手动比较，未说明谁负责选商、审批或采购决策。",
+  "automation_boundary": "【确定性代码】Excel/结构化 PDF 的字段抽取、价格数值归一化、单位换算、去重、排序、差异对比、报表生成；【LLM】非结构化 PDF 文本或扫描件的字段与规格信息抽取、同义规格归一、异常描述摘要、遗漏检查提示；【必须人工】确认规格等价性、处理歧义或异常报价、最终供应商选择与审批（原话未说明决策人）；【待定】是否自动推荐供应商、是否对接 ERP/采购系统、部署方式与数据权限边界。"
+}

@@ -1,0 +1,173 @@
+{
+  "customer_raw_input": "我们公司每天要处理大量供应商报价单，很多是 Excel 和 PDF，现在采购人员需要手动比较价格和规格，非常耗时间，我们采购部的张经理希望能自动推荐最便宜的供应商。",
+  "industry": "未说明（有供应商采购比价场景，可能为制造、零售、贸易等）",
+  "business_function": "采购/供应链管理",
+  "scenario": "供应商报价单自动比价与最低价推荐",
+  "pain_points": [
+    {
+      "description": "每天要处理大量供应商报价单",
+      "source": "explicit",
+      "quote": "每天要处理大量供应商报价单",
+      "confidence": null
+    },
+    {
+      "description": "报价单很多是 Excel 和 PDF 两种格式",
+      "source": "explicit",
+      "quote": "很多是 Excel 和 PDF",
+      "confidence": null
+    },
+    {
+      "description": "采购人员需要手动比较价格和规格",
+      "source": "explicit",
+      "quote": "采购人员需要手动比较价格和规格",
+      "confidence": null
+    },
+    {
+      "description": "手动比价非常耗时间",
+      "source": "explicit",
+      "quote": "非常耗时间",
+      "confidence": null
+    },
+    {
+      "description": "Excel/PDF 报价单格式不统一，价格和规格字段难以直接结构化比较",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.85
+    },
+    {
+      "description": "人工比较价格和规格容易遗漏、出错，且难以规模化处理",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.7
+    },
+    {
+      "description": "仅按最低价推荐可能忽略规格、交期、税费、运费、账期等可比性因素",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.65
+    }
+  ],
+  "desired_outcomes": [
+    {
+      "description": "自动推荐最便宜的供应商",
+      "source": "explicit",
+      "quote": "自动推荐最便宜的供应商",
+      "confidence": null
+    },
+    {
+      "description": "减少采购人员手动比价的时间消耗",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.9
+    },
+    {
+      "description": "自动解析 Excel 和 PDF 报价单并提取价格、规格等关键字段",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.85
+    },
+    {
+      "description": "快速筛选/排序供应商报价，辅助采购人员比价",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.8
+    },
+    {
+      "description": "降低人工比价遗漏和差错",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.6
+    }
+  ],
+  "open_questions": [
+    {
+      "description": "推荐最便宜供应商时，是否只比较价格，还是需综合规格、交期、账期、税率、运费、最小起订量等？",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.4
+    },
+    {
+      "description": "报价单模板和字段是否统一，PDF 是否可复制文本或为扫描件？",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.4
+    },
+    {
+      "description": "每日/每月报价单数量、供应商数量、单份报价行数量级是多少？",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.3
+    },
+    {
+      "description": "是否允许使用云服务或 LLM 处理包含供应商价格的数据？",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.3
+    },
+    {
+      "description": "推荐结果是否仅辅助采购人员，还是可直接进入审批/下单/谈判流程？",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.4
+    },
+    {
+      "description": "是否已有 ERP/SRM/供应商主数据/历史报价库可集成？",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.3
+    }
+  ],
+  "constraints": [
+    {
+      "category": "deployment",
+      "value": "unknown",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.0
+    },
+    {
+      "category": "data_sensitivity",
+      "value": "unknown",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.0
+    },
+    {
+      "category": "volume",
+      "value": "大量供应商报价单",
+      "source": "explicit",
+      "quote": "大量供应商报价单",
+      "confidence": null
+    },
+    {
+      "category": "volume",
+      "value": "unknown —— 报价单每日/每月数量、供应商数量、单份报价行数未知，影响解析吞吐、存储、并发和成本",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.0
+    },
+    {
+      "category": "integration",
+      "value": "unknown",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.0
+    }
+  ],
+  "data_assets": [
+    "Excel 报价单",
+    "PDF 报价单",
+    "供应商报价中的价格、规格等字段（字段定义与模板未说明）",
+    "供应商主数据与历史报价数据（是否已有未说明）",
+    "【待澄清】报价单样例、字段模板和异常报价规则"
+  ],
+  "current_workflow": [
+    "每天处理大量供应商报价单",
+    "报价单以 Excel 和 PDF 形式存在",
+    "采购人员手动比较价格和规格",
+    "【待澄清】报价单如何接收、汇总和分发（邮箱、共享盘、系统等）",
+    "【待澄清】比价后如何审批、谈判、下单，以及张经理的具体职责"
+  ],
+  "decision_owner": "张经理（采购部）是需求提出者/推动者；最终决策人 unknown：原话只说明其希望自动推荐最便宜供应商，未说明谁批准预算、选型、上线及采购决策权。",
+  "automation_boundary": "【确定性代码】文件接入与格式识别；Excel 解析；价格数值提取、排序、最低价筛选；字段校验、去重、审计日志。 【LLM】PDF/扫描件文本抽取与字段归一化；规格描述语义对齐；单位、币种、税率等非结构化条款识别；生成比价摘要与异常解释。 【必须人工】确认供应商资质与规格等效性；处理缺项、异常或不可比报价；最终选商、议价与下单审批。 【待定】推荐是否仅按最低价还是综合评分；是否与 ERP/SRM 集成；部署方式与数据脱敏/上云许可；推荐结果的权限与审批流程。"
+}

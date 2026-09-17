@@ -1,0 +1,116 @@
+{
+  "customer_raw_input": "我们公司每天要处理大量供应商报价单，很多是 Excel 和 PDF，现在采购人员需要手动比较价格和规格，非常耗时间，而且经常出现遗漏。",
+  "industry": "unknown",
+  "business_function": "采购",
+  "scenario": "供应商报价单处理与比价",
+  "pain_points": [
+    {
+      "description": "采购人员需要手动比较价格和规格，非常耗时间",
+      "source": "explicit",
+      "quote": "现在采购人员需要手动比较价格和规格，非常耗时间",
+      "confidence": null
+    },
+    {
+      "description": "手动处理报价单经常出现遗漏",
+      "source": "explicit",
+      "quote": "而且经常出现遗漏",
+      "confidence": null
+    },
+    {
+      "description": "报价单格式不统一（Excel 和 PDF 混合），增加处理难度",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.8
+    }
+  ],
+  "desired_outcomes": [
+    {
+      "description": "自动提取 Excel 和 PDF 报价单中的价格与规格信息",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.9
+    },
+    {
+      "description": "自动比较不同供应商的报价，减少人工耗时",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.9
+    },
+    {
+      "description": "降低报价单处理中的遗漏率",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.8
+    }
+  ],
+  "open_questions": [
+    {
+      "description": "是否需要自动推荐供应商或生成采购建议？",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.3
+    },
+    {
+      "description": "是否需要与现有 ERP 或采购系统集成？",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.4
+    },
+    {
+      "description": "报价单的字段结构是否固定？是否存在多语言或复杂表格？",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.4
+    }
+  ],
+  "constraints": [
+    {
+      "category": "deployment",
+      "value": "unknown",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.0
+    },
+    {
+      "category": "data_sensitivity",
+      "value": "unknown",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.0
+    },
+    {
+      "category": "volume",
+      "value": "大量供应商报价单",
+      "source": "explicit",
+      "quote": "每天要处理大量供应商报价单",
+      "confidence": null
+    },
+    {
+      "category": "volume",
+      "value": "unknown —— 具体数量级未知，影响处理架构（批处理 vs 实时）和成本估算",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.0
+    },
+    {
+      "category": "integration",
+      "value": "unknown",
+      "source": "inferred",
+      "quote": null,
+      "confidence": 0.0
+    }
+  ],
+  "data_assets": [
+    "供应商报价单（Excel 格式）",
+    "供应商报价单（PDF 格式）",
+    "【待澄清】报价单中具体包含哪些字段（如价格、规格、供应商名称、日期等）",
+    "【待澄清】是否存在历史报价数据或供应商主数据"
+  ],
+  "current_workflow": [
+    "采购人员手动打开 Excel 和 PDF 报价单",
+    "采购人员手动比较价格和规格",
+    "【待澄清】比较后如何记录结果、如何决策、是否录入系统"
+  ],
+  "decision_owner": "unknown —— 客户未说明谁负责选型或采购决策",
+  "automation_boundary": "【确定性代码】解析 Excel 和 PDF 文件、提取结构化字段（价格、规格等）、执行数值比较和排序。【LLM】处理非结构化文本、理解复杂表格或模糊规格描述、辅助提取非标准字段。【必须人工】最终供应商选择与采购决策、异常报价的复核、处理解析失败或格式异常的报价单。【待定】是否需要自动生成比价报告、是否需要与现有系统集成、数据安全与部署方式。"
+}
