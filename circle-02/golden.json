@@ -1,0 +1,124 @@
+[
+    {
+        "query_id": "Q1",
+        "problem_model" : {
+            "customer_raw_input": "我们公司每天要处理大量供应商报价单，很多是 Excel 和 PDF，现在采购人员需要手动比较价格和规格，非常耗时间，而且经常出现遗漏。",
+            "industry": "unknown",
+            "business_function": "采购",
+            "scenario": "供应商报价单处理与比较",
+            "pain_points": [
+                {
+                "description": "采购人员需要手动比较供应商报价单中的价格和规格，非常耗时间",
+                "source": "explicit",
+                "quote": "现在采购人员需要手动比较价格和规格，非常耗时间",
+                "confidence": null
+                },
+                {
+                "description": "手动处理报价单时经常出现遗漏",
+                "source": "explicit",
+                "quote": "经常出现遗漏",
+                "confidence": null
+                },
+                {
+                "description": "大量报价单给人工带宽带来压力",
+                "source": "explicit",
+                "quote": "每天要处理大量供应商报价单",
+                "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                "description": "减少或消除手动比较价格和规格所需的时间",
+                "source": "inferred",
+                "quote": null,
+                "confidence": 0.9
+                },
+                {
+                "description": "减少报价单处理中的遗漏",
+                "source": "inferred",
+                "quote": null,
+                "confidence": 0.9
+                }
+            ],
+            "open_questions": [
+                {
+                "description": "是否需要自动从 Excel 和 PDF 中提取价格与规格字段",
+                "source": "inferred",
+                "quote": null,
+                "confidence": 0.45
+                },
+                {
+                "description": "是否需要按同一物料对齐多个供应商的报价以便直接比价",
+                "source": "inferred",
+                "quote": null,
+                "confidence": 0.45
+                },
+                {
+                "description": "是否需要对提取结果或比价结果建立复核机制",
+                "source": "inferred",
+                "quote": null,
+                "confidence": 0.3
+                },
+                {
+                "description": "是否希望自动生成比价结果或建议",
+                "source": "inferred",
+                "quote": null,
+                "confidence": 0.3
+                }
+            ],
+            "constraints": [
+                {
+                "category": "deployment",
+                "value": "unknown",
+                "source": "inferred",
+                "quote": null,
+                "confidence": 0.0
+                },
+                {
+                "category": "data_sensitivity",
+                "value": "unknown —— 客户未说明报价单和供应商数据的敏感级别，影响部署与脱敏要求",
+                "source": "inferred",
+                "quote": null,
+                "confidence": 0.0
+                },
+                {
+                "category": "volume",
+                "value": "大量供应商报价单，每天处理",
+                "source": "explicit",
+                "quote": "每天要处理大量供应商报价单",
+                "confidence": null
+                },
+                {
+                "category": "volume",
+                "value": "unknown —— 实际每天报价单数量、页数、Excel 与 PDF 占比未知，影响解析吞吐、OCR 成本和架构选型",
+                "source": "inferred",
+                "quote": null,
+                "confidence": 0.0
+                },
+                {
+                "category": "integration",
+                "value": "unknown",
+                "source": "inferred",
+                "quote": null,
+                "confidence": 0.0
+                }
+            ],
+            "data_assets": [
+                "供应商报价单（Excel 格式）",
+                "供应商报价单（PDF 格式）",
+                "【待澄清】具体包含的字段及其格式，如价格、规格、供应商名称、日期等"
+            ],
+            "current_workflow": [
+                "每天接收大量供应商报价单",
+                "采购人员手动查看 Excel 和 PDF 报价单",
+                "采购人员手动比较价格和规格",
+                "【待澄清】比较结果如何记录、汇总和后续处理"
+            ],
+            "decision_owner": "unknown —— 客户未说明谁决定采购方案或选定供应商，也未说明谁负责推动报价处理自动化",
+            "automation_boundary": "【确定性代码】从结构化或半结构化文档中解析固定字段、校验文件格式与完整性、执行规则化比对与去重。【LLM】从格式不固定的 Excel 和 PDF 报价单中抽取价格、规格等关键信息，并进行语义对齐与辅助比较。【必须人工】处理解析异常、确认模糊或冲突报价内容、做最终采购判断。【待定】自动生成比价结论的权限、报价数据存储位置与访问控制、与现有采购系统的集成方式。"
+            },
+        "relevant_doc_ids": [
+            "C1"
+        ]
+    }
+]

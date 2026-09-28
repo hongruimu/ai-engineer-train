@@ -167,7 +167,7 @@ def call_llm(messages: list[ChatCompletionMessageParam], want_json: bool = True)
         model="deepseek-flash",
         messages=messages,
         response_format={"type": "json_object"} if want_json else {"type": "text"},
-        # temperature=1,
+        temperature=1,
         extra_body={"thinking": {"type": "disabled"}},
     )
     text = str(response.choices[0].message.content)
