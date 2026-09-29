@@ -115,15 +115,74 @@ class BM25:
 
 
 class KeywordRetriever:
-    """确定性关键词检索。你的基线，已可用。"""
+    """确定性关键词检索。你的基线，已可用。
+
+    Stage 2 之前，它没有「弃权」能力：无论 query 多不相关，BM25 永远返回 k 篇。
+    这意味着零正例查询永远走「硬凑」分支（recall=0.0）。
+    下面的 score_floor 是给弃权留的接口，但⚠️它有一个陷阱，见 should_abstain。
+    """
 
     name = "keyword(BM25)"
 
-    def __init__(self, docs: list[Document]):
+    def __init__(self, docs: list[Document], abstain: bool = False):
         self.index = BM25(docs)
+        # abstain: 是否启用弃权。False = 保持原行为（永远返回 k 篇）。
+        # True = 调用 should_abstain 逐条过滤，全被丢弃则返回 []。
+        self.abstain = abstain
 
     def retrieve(self, query: str, top_k: int = TOP_K) -> list[str]:
-        return [doc_id for doc_id, _ in self.index.search(query, top_k)]
+        scored = self.index.search(query, top_k)          # [(doc_id, score), ...]
+        if not self.abstain:
+            return [doc_id for doc_id, _ in scored]
+        # 弃权判定：把 should_abstain 判 True 的结果丢掉，全丢光就返回 []
+        kept = [(d, s) for d, s in scored if not self.should_abstain(d, s, scored)]
+        return [doc_id for doc_id, _ in kept]
+
+    def should_abstain(self, doc_id: str, score: float, all_scored: list[tuple[str, float]]) -> bool:
+        """【Step 8 训练点 (b) —— 你来填策略，我不代写】
+
+        判断这条结果是否该被丢弃（弃权）。返回 True = 丢掉它。
+
+        ⚠️ 已实测结论：**在 BM25 分数上，这个函数无解。不要试图填它。**
+        2026-09-29 穷举验证了四种规则，判据是「该保留的查询」与「该丢弃的查询」
+        的取值区间是否分离：
+
+            规则                 Q1(该留,5正例)  Q2(该弃)  Q3(该弃)   可行?
+            ─────────────────────────────────────────────────────────────
+            A ratio  = s1/s2          1.13        1.78      1.04     ❌ 重叠
+            A gap    = s1-s2         50.51        4.80      0.30     ⚠️ 见下
+            A norm_gap = gap/ntok     0.05        0.18      0.01     ❌ 重叠
+            B norm1  = s1/ntok        0.39        0.41      0.34     ❌ 重叠
+            C rel_mean = s1/mean      1.99        3.69      2.54     ❌ 重叠
+            D 绝对 s1               429.9        11.0       7.9     ⚠️ 见下
+
+        A(ratio) 最反直觉：Q2 的 top1/top2=1.78 比 Q1 的 1.13 还大，
+        即「断层更明显」的反而是该弃权的那条。用 gap 判会正好搞反。
+
+        gap 和绝对 s1 看似可行，但它们分离的是 **query 长度**，不是相关性：
+        Q1 的 query 是 774 字符/1099 token，Q3 是 12 字符/23 token，长 64 倍。
+        BM25 分数随 query 词数累加，所以长 query 必然高分。
+        把 Q2/Q3 重建成同规格 ProblemModel 走同一条 build_query 后，
+        top1 变成 25.9 / 22.3，与 Q1 的 429.9 仍差 17 倍——差距来自字段填充量。
+        → 用 gap/绝对阈值等于「query 短就弃权」，与相关性无关。
+
+        B(归一化) 是最有力的反证：按 token 数归一化后，
+        Q2(零正例) 的 0.41 反而 **高于** Q1(5个正例) 的 0.39。
+        原因：Q1 的长 query 里大量 token 匹配不到任何文档，摊薄了每 token 得分。
+        这说明 BM25 分数里混入了「query 有多少词命中过东西」，
+        而这个量与「命中的是不是对的」无关。
+
+        **根本原因**：BM25 度量的是词面重叠，不是语义相关。
+        Q2 该弃权，但它召回的 F2 是「同词面不同领域」的干扰文档——
+        词面上 F2 确实高度匹配「设备预测性维护」。BM25 报告高分是**正确**的，
+        错的是把词面相似当语义相关。任何对词面分数的单调变换都无法恢复语义相关性。
+
+        **所以弃权能力属于 Stage 2**（向量检索 / cross-encoder 重排 / LLM 判定），
+        不属于关键词基线。这个函数保留是为 Stage 2 的检索器准备的接口。
+        关键词检索器的正确取值就是 abstain=False，且 Q2/Q3 必须保持 ❌——
+        那是对真实产品风险的**正确测量**，不是待修复的缺陷。
+        """
+        return False   # 关键词层无弃权能力，见上方实测结论
 
 
 # ─────────────────────────────────────────────────────────────
@@ -210,8 +269,14 @@ def recall_at_k(retrieved: list[str], relevant: list[str], k: int = TOP_K) -> fl
     """召回率：该找到的文档，有多少落在 top_k 里。"""
     top = set(retrieved[:k])
     rel = set(relevant)
+    # top空代表没有召回内容，rel为空代表真实没有内容，这个召回率值给1代表系统确实召回率高，没有匹配的内容确实没召回
+    if not top and not rel:
+        return 1.0
+    
+    # top不为空，但是rel为空，证明召回存在噪声，导致召回率并不高
     if not rel:
         return 0.0
+    
     return len(top & rel) / len(rel)
 
 
@@ -224,6 +289,10 @@ def precision_at_k(retrieved: list[str], relevant: list[str], k: int = TOP_K) ->
     """
     top = retrieved[:k]
     rel = set(relevant)
+    # 都为空，没有召回任何内容，证明精度就是很高
+    if not top and not rel:
+        return 1.0
+    # rel不为空，但是top为空，证明确实啥也没召回，就是精度很低，给0是合理的
     if not top:
         return 0.0
     return sum(1 for d in top if d in rel) / len(top)
@@ -254,6 +323,16 @@ def evaluate(retriever, golden: list[dict], k: int = TOP_K, n_docs: int | None =
         )
 
     recs, precs, rrs, per_query = [], [], [], []
+    # ── 防呆：未标注（None）不能等同于「零正例」（[]）──
+    # [] 是你判断过「确实没有对应方案」；None 是你还没标。
+    # 两者混在一起会静默拉低平均分，且看不出来是哪条没标。
+    unlabeled = [c.get("query_id", "?") for c in golden if c.get("relevant_doc_ids") is None]
+    if unlabeled:
+        raise ValueError(
+            f"以下查询尚未标注 relevant_doc_ids：{unlabeled}\n"
+            f"请用 null（未标注）与 []（已确认零正例）区分两种状态。\n"
+            f"运行 python3 label.py 做盲标。"
+        )
     for case in golden:
         query = build(case["problem_model"]) if "problem_model" in case else case.get("query_text", "")
         got = retriever.retrieve(query, k)
