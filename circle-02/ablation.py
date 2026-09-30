@@ -117,7 +117,7 @@ def v4_your_strategy(pm: dict) -> str:
        的 recall、precision、MRR 和逐查询结果。如果根据测试结果继续修改 V4，该批
        数据就转为开发集，必须再准备新的独立测试集。
 
-    
+
     实现约束：
       - 只准用 problem_model 里已有的字段，不准硬编码 "报价" "比价" 等本例答案词
       - 写完必须自己跑通，把输出贴在 REFLECTION 里

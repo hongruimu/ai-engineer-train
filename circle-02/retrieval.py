@@ -23,8 +23,11 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import pathlib
 import re
+import urllib.error
+import urllib.request
 from collections import Counter
 from dataclasses import dataclass, field
 
@@ -34,6 +37,9 @@ GOLDEN_FILE = HERE / "golden.json"
 
 TOP_K = 3   # 必须显著小于语料篇数，否则 recall@k 恒为 1.0（见 evaluate 注释）
             # 语料已扩到 23 篇。取 3 也是真实 RAG 里 Context 注入的常见条数（token 预算有限）
+
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434").rstrip("/")
+OLLAMA_EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "qwen3-embedding:0.6b")
 
 
 # ─────────────────────────────────────────────────────────────
@@ -221,29 +227,129 @@ def build_query(problem_model: dict) -> str:
 
 
 # ─────────────────────────────────────────────────────────────
-# 【核心关键点 2 —— Stage 2 才做，现在只留接口】
+# 【核心关键点 2 —— Stage 2】
 # ─────────────────────────────────────────────────────────────
+class OllamaEmbeddingClient:
+    """Ollama `/api/embed` 的最小标准库客户端。"""
+
+    def __init__(
+        self,
+        base_url: str = OLLAMA_BASE_URL,
+        model: str = OLLAMA_EMBED_MODEL,
+        timeout: float = 120.0,
+    ):
+        self.base_url = base_url.rstrip("/")
+        self.model = model
+        self.timeout = timeout
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        if not texts:
+            return []
+        if any(not isinstance(text, str) or not text.strip() for text in texts):
+            raise ValueError("embedding 输入必须是非空字符串列表")
+
+        payload = json.dumps(
+            {
+                "model": self.model,
+                "input": texts,
+                "keep_alive": "30m",
+            }
+        ).encode("utf-8")
+        request = urllib.request.Request(
+            f"{self.base_url}/api/embed",
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+
+        try:
+            with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                body = response.read().decode("utf-8")
+        except urllib.error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace")
+            raise RuntimeError(
+                f"Ollama embedding 请求失败：HTTP {exc.code}，model={self.model}，detail={detail}"
+            ) from exc
+        except (urllib.error.URLError, TimeoutError) as exc:
+            raise RuntimeError(
+                f"无法连接 Ollama embedding 服务：{self.base_url}，model={self.model}，error={exc}"
+            ) from exc
+
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError as exc:
+            raise RuntimeError("Ollama embedding 响应不是合法 JSON") from exc
+
+        embeddings = data.get("embeddings") if isinstance(data, dict) else None
+        if not isinstance(embeddings, list) or len(embeddings) != len(texts):
+            raise RuntimeError(
+                f"Ollama embedding 数量不匹配：输入 {len(texts)} 条，输出 "
+                f"{len(embeddings) if isinstance(embeddings, list) else '非法'} 条"
+            )
+
+        normalized: list[list[float]] = []
+        dimensions: set[int] = set()
+        for index, embedding in enumerate(embeddings):
+            if not isinstance(embedding, list) or not embedding:
+                raise RuntimeError(f"Ollama embedding 第 {index} 条向量为空或格式非法")
+            try:
+                vector = [float(value) for value in embedding]
+            except (TypeError, ValueError) as exc:
+                raise RuntimeError(f"Ollama embedding 第 {index} 条包含非数值元素") from exc
+            normalized.append(vector)
+            dimensions.add(len(vector))
+
+        if len(dimensions) != 1:
+            raise RuntimeError(f"Ollama embedding 向量维度不一致：{sorted(dimensions)}")
+
+        return normalized
+
+
 class VectorRetriever:
-    """语义检索。Stage 2。
-
-    需要一个 embedding 服务（阿里云百炼 text-embedding-v3 / OpenAI text-embedding-3-small 等）。
-    DeepSeek 目前不提供 embedding 接口，所以 Stage 2 你可能要换一个 key。
-
-    实现要点（想清楚再写）：
-      - 文档侧 embedding 可以离线算好缓存（Circle 1 你已见过 prompt_cache 命中）
-      - 相似度用 cosine；top_k 截断
-      - 与前置题结论呼应：embedding 度量的是**话题相似**，不是**逻辑蕴含**。
-        对 F13 那类 entailment 断言它会给假阳性。检索场景里话题相似通常够用，
-        但你要能说清这个区别。
-    """
+    """使用本地 Ollama embedding 的语义检索器。"""
 
     name = "vector(cosine)"
 
-    def __init__(self, docs: list[Document]):
-        raise NotImplementedError("Stage 2：语义检索由你实现")
+    def __init__(
+        self,
+        docs: list[Document],
+        client: OllamaEmbeddingClient | None = None,
+    ):
+        self.docs = docs
+        self.client = client or OllamaEmbeddingClient()
+        self.doc_vectors = self.client.embed([doc.text for doc in docs]) if docs else []
+        if len(self.doc_vectors) != len(self.docs):
+            raise RuntimeError(
+                f"文档向量数量不匹配：documents={len(self.docs)}，vectors={len(self.doc_vectors)}"
+            )
+        dimensions = {len(vector) for vector in self.doc_vectors}
+        if self.doc_vectors and (0 in dimensions or len(dimensions) != 1):
+            raise RuntimeError(f"文档向量维度非法或不一致：{sorted(dimensions)}")
 
     def retrieve(self, query: str, top_k: int = TOP_K) -> list[str]:
-        raise NotImplementedError
+        if not self.docs or top_k <= 0:
+            return []
+
+        query_vector = self.client.embed([query])[0]
+        document_dimension = len(self.doc_vectors[0])
+        if len(query_vector) != document_dimension:
+            raise RuntimeError(
+                f"query 与文档向量维度不一致：query={len(query_vector)}，"
+                f"document={document_dimension}"
+            )
+
+        scored = []
+        for doc, vector in zip(self.docs, self.doc_vectors):
+            if len(vector) != document_dimension:
+                raise RuntimeError(
+                    f"文档 {doc.doc_id} 的向量维度不一致："
+                    f"expected={document_dimension}，actual={len(vector)}"
+                )
+            score = sum(query_value * doc_value for query_value, doc_value in zip(query_vector, vector))
+            scored.append((doc.doc_id, score))
+
+        scored.sort(key=lambda item: (-item[1], item[0]))
+        return [doc_id for doc_id, _ in scored[:top_k]]
 
 
 class HybridRetriever:
