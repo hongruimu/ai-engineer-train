@@ -76,6 +76,10 @@ def main() -> None:
     golden = json.loads(R.GOLDEN_FILE.read_text("utf-8"))
     keyword = R.KeywordRetriever(docs)
     vector = R.VectorRetriever(docs)
+    print(
+        f"Vector 文档缓存：hits={vector.cache_hits}，"
+        f"misses={vector.cache_misses}，file={vector.cache_file}"
+    )
     evaluate_args = {
         "golden": golden,
         "k": R.TOP_K,

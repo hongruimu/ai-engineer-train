@@ -21,6 +21,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import os
@@ -40,6 +41,8 @@ TOP_K = 3   # 必须显著小于语料篇数，否则 recall@k 恒为 1.0（见 
 
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434").rstrip("/")
 OLLAMA_EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "qwen3-embedding:0.6b")
+VECTOR_CACHE_FILE = HERE / ".vector_cache.json"
+VECTOR_CACHE_VERSION = 1
 
 
 # ─────────────────────────────────────────────────────────────
@@ -314,10 +317,14 @@ class VectorRetriever:
         self,
         docs: list[Document],
         client: OllamaEmbeddingClient | None = None,
+        cache_file: pathlib.Path | None = VECTOR_CACHE_FILE,
     ):
         self.docs = docs
         self.client = client or OllamaEmbeddingClient()
-        self.doc_vectors = self.client.embed([doc.text for doc in docs]) if docs else []
+        self.cache_file = cache_file
+        self.cache_hits = 0
+        self.cache_misses = 0
+        self.doc_vectors = self._load_or_create_doc_vectors()
         if len(self.doc_vectors) != len(self.docs):
             raise RuntimeError(
                 f"文档向量数量不匹配：documents={len(self.docs)}，vectors={len(self.doc_vectors)}"
@@ -325,6 +332,110 @@ class VectorRetriever:
         dimensions = {len(vector) for vector in self.doc_vectors}
         if self.doc_vectors and (0 in dimensions or len(dimensions) != 1):
             raise RuntimeError(f"文档向量维度非法或不一致：{sorted(dimensions)}")
+
+    @staticmethod
+    def _text_sha256(text: str) -> str:
+        return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+    @staticmethod
+    def _read_cached_vector(entry: object, text_sha256: str) -> list[float] | None:
+        if not isinstance(entry, dict) or entry.get("text_sha256") != text_sha256:
+            return None
+        raw_vector = entry.get("vector")
+        if not isinstance(raw_vector, list) or not raw_vector:
+            return None
+        try:
+            vector = [float(value) for value in raw_vector]
+        except (TypeError, ValueError):
+            return None
+        if any(not math.isfinite(value) for value in vector):
+            return None
+        return vector
+
+    def _load_cache_documents(self) -> dict[str, dict]:
+        if self.cache_file is None or not self.cache_file.exists():
+            return {}
+        try:
+            payload = json.loads(self.cache_file.read_text("utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return {}
+        if not isinstance(payload, dict):
+            return {}
+        if payload.get("version") != VECTOR_CACHE_VERSION:
+            return {}
+        if payload.get("model") != self.client.model:
+            return {}
+        documents = payload.get("documents")
+        return documents if isinstance(documents, dict) else {}
+
+    def _write_cache(self, vectors: list[list[float]]) -> None:
+        if self.cache_file is None:
+            return
+        payload = {
+            "version": VECTOR_CACHE_VERSION,
+            "model": self.client.model,
+            "documents": {
+                doc.doc_id: {
+                    "text_sha256": self._text_sha256(doc.text),
+                    "vector": vector,
+                }
+                for doc, vector in zip(self.docs, vectors)
+            },
+        }
+        self.cache_file.parent.mkdir(parents=True, exist_ok=True)
+        temporary_file = self.cache_file.with_name(
+            f"{self.cache_file.name}.{os.getpid()}.tmp"
+        )
+        temporary_file.write_text(
+            json.dumps(payload, ensure_ascii=False, separators=(",", ":")),
+            "utf-8",
+        )
+        temporary_file.replace(self.cache_file)
+
+    def _load_or_create_doc_vectors(self) -> list[list[float]]:
+        if not self.docs:
+            return []
+
+        cached_documents = self._load_cache_documents()
+        vectors: list[list[float] | None] = [None] * len(self.docs)
+        missing_indexes: list[int] = []
+
+        for index, doc in enumerate(self.docs):
+            vector = self._read_cached_vector(
+                cached_documents.get(doc.doc_id),
+                self._text_sha256(doc.text),
+            )
+            if vector is None:
+                missing_indexes.append(index)
+            else:
+                vectors[index] = vector
+
+        cached_dimensions = {len(vector) for vector in vectors if vector is not None}
+        if len(cached_dimensions) > 1:
+            vectors = [None] * len(self.docs)
+            missing_indexes = list(range(len(self.docs)))
+
+        if missing_indexes:
+            fresh_vectors = self.client.embed(
+                [self.docs[index].text for index in missing_indexes]
+            )
+            for index, vector in zip(missing_indexes, fresh_vectors):
+                vectors[index] = vector
+
+        complete_vectors = [vector for vector in vectors if vector is not None]
+        dimensions = {len(vector) for vector in complete_vectors}
+        if len(complete_vectors) != len(self.docs):
+            raise RuntimeError("文档向量缓存补算后仍有缺失")
+
+        if len(dimensions) > 1 and len(missing_indexes) < len(self.docs):
+            complete_vectors = self.client.embed([doc.text for doc in self.docs])
+            missing_indexes = list(range(len(self.docs)))
+
+        self.cache_misses = len(missing_indexes)
+        self.cache_hits = len(self.docs) - self.cache_misses
+        if self.cache_misses or len(cached_documents) != len(self.docs):
+            self._write_cache(complete_vectors)
+        return complete_vectors
 
     def retrieve(self, query: str, top_k: int = TOP_K) -> list[str]:
         if not self.docs or top_k <= 0:

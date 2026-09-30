@@ -12,6 +12,7 @@ __pycache__/
 .ruff_cache/
 .pyre/
 .hypothesis/
+circle-02/.vector_cache.json
 
 # Virtual environments
 .venv/
