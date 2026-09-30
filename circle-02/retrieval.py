@@ -464,19 +464,68 @@ class VectorRetriever:
 
 
 class HybridRetriever:
-    """关键词 + 语义融合（RRF 或加权）。Stage 2。
+    """使用 RRF 融合关键词检索与向量检索的排名。
 
     为什么需要融合：关键词擅长精确术语（"ERP""OCR"），语义擅长同义改写
     （"比价太慢" vs "报价自动化分析"）。两者失败模式互补。
     """
 
-    name = "hybrid(keyword+vector)"
+    name = "hybrid(rrf)"
 
-    def __init__(self, docs: list[Document]):
-        raise NotImplementedError("Stage 2：由你实现")
+    def __init__(
+        self,
+        docs: list[Document],
+        vector_client: OllamaEmbeddingClient | None = None,
+        vector_cache_file: pathlib.Path | None = VECTOR_CACHE_FILE,
+        candidate_k: int = 10,
+        rank_constant: float = 60.0,
+    ):
+        if candidate_k <= 0:
+            raise ValueError("candidate_k 必须大于 0")
+        if rank_constant < 0:
+            raise ValueError("rank_constant 不能小于 0")
+
+        self.docs = docs
+        self.candidate_k = candidate_k
+        self.rank_constant = rank_constant
+        self.keyword_retriever = KeywordRetriever(docs)
+        self.vector_retriever = VectorRetriever(
+            docs,
+            client=vector_client,
+            cache_file=vector_cache_file,
+        )
+
+    @staticmethod
+    def _fuse_rankings(
+        rankings: list[list[str]],
+        top_k: int,
+        rank_constant: float,
+    ) -> list[str]:
+        rrf_scores: dict[str, float] = {}
+        for ranking in rankings:
+            for rank, doc_id in enumerate(ranking, start=1):
+                rrf_scores[doc_id] = rrf_scores.get(doc_id, 0.0) + 1.0 / (
+                    rank_constant + rank
+                )
+
+        ranked = sorted(rrf_scores.items(), key=lambda item: (-item[1], item[0]))
+        return [doc_id for doc_id, _ in ranked[:top_k]]
 
     def retrieve(self, query: str, top_k: int = TOP_K) -> list[str]:
-        raise NotImplementedError
+        if not self.docs or top_k <= 0:
+            return []
+
+        candidate_limit = min(
+            len(self.docs),
+            max(self.candidate_k, top_k + 1),
+        )
+        keyword_ranking = self.keyword_retriever.retrieve(query, candidate_limit)
+        vector_ranking = self.vector_retriever.retrieve(query, candidate_limit)
+        return self._fuse_rankings(
+            [keyword_ranking, vector_ranking],
+            top_k,
+            self.rank_constant,
+        )
 
 
 # ─────────────────────────────────────────────────────────────
