@@ -1,0 +1,852 @@
+[
+    {
+        "query_id": "T01",
+        "problem_model": {
+            "customer_raw_input": "新品准备量产，几家代工厂给出的总价看着差不多，但最低采购量、付款条件和交货方式都不一样，我们也不知道报价是否合理，最后选哪家基本靠采购经验。",
+            "industry": "消费电子制造",
+            "business_function": "供应链管理",
+            "scenario": "新品合作方综合成本决策",
+            "pain_points": [
+                {
+                    "description": "不同合作方的价格和商务条件难以统一比较",
+                    "source": "explicit",
+                    "quote": "最低采购量、付款条件和交货方式都不一样",
+                    "confidence": null
+                },
+                {
+                    "description": "缺少判断报价合理性的成本依据",
+                    "source": "explicit",
+                    "quote": "不知道报价是否合理",
+                    "confidence": null
+                },
+                {
+                    "description": "合作方选择依赖个人经验",
+                    "source": "explicit",
+                    "quote": "选哪家基本靠采购经验",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "综合比较价格、成本构成和商务条件",
+                    "source": "inferred",
+                    "quote": null,
+                    "confidence": 0.9
+                },
+                {
+                    "description": "形成可解释的合作方选择建议",
+                    "source": "inferred",
+                    "quote": null,
+                    "confidence": 0.85
+                }
+            ],
+            "open_questions": [],
+            "constraints": [],
+            "data_assets": [
+                "多家代工厂报价与商务条款",
+                "产品物料构成"
+            ],
+            "current_workflow": [
+                "采购人工收集报价",
+                "凭经验比较总价和条款",
+                "人工确定合作方"
+            ],
+            "decision_owner": "采购负责人",
+            "automation_boundary": "【确定性代码】价格与条款结构化比较。【LLM】成本项语义归类与差异解释。【必须人工】合作方选择与商务谈判。"
+        },
+        "relevant_doc_ids": [
+            "C2"
+        ]
+    },
+    {
+        "query_id": "T02",
+        "problem_model": {
+            "customer_raw_input": "理赔中心每天收到各种扫描件、PDF 和 Excel 表，版式都不一样。我们想做一个通用服务，把表格和字段转成 JSON，识别不准的内容交给人工确认，再提供接口给多个业务系统调用。",
+            "industry": "保险",
+            "business_function": "理赔运营",
+            "scenario": "异构业务文档结构化服务",
+            "pain_points": [
+                {
+                    "description": "扫描件、PDF 与 Excel 的版式不统一",
+                    "source": "explicit",
+                    "quote": "版式都不一样",
+                    "confidence": null
+                },
+                {
+                    "description": "多个业务系统缺少统一的文档解析能力",
+                    "source": "explicit",
+                    "quote": "提供接口给多个业务系统调用",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "将多版式文档转换为标准 JSON",
+                    "source": "explicit",
+                    "quote": "把表格和字段转成 JSON",
+                    "confidence": 0.95
+                },
+                {
+                    "description": "低置信识别结果进入人工复核",
+                    "source": "explicit",
+                    "quote": "识别不准的内容交给人工确认",
+                    "confidence": 0.95
+                }
+            ],
+            "open_questions": [],
+            "constraints": [
+                {
+                    "category": "integration",
+                    "value": "需要以接口方式供多个业务系统调用",
+                    "source": "explicit",
+                    "quote": "提供接口给多个业务系统调用",
+                    "confidence": null
+                }
+            ],
+            "data_assets": [
+                "扫描件",
+                "PDF 文件",
+                "Excel 表格"
+            ],
+            "current_workflow": [
+                "人工查看不同格式文档",
+                "手工录入业务系统"
+            ],
+            "decision_owner": "理赔运营负责人",
+            "automation_boundary": "【确定性代码】文件接收、JSON 输出和任务路由。【LLM/OCR】版面理解与字段抽取。【必须人工】低置信字段确认。"
+        },
+        "relevant_doc_ids": [
+            "B1"
+        ]
+    },
+    {
+        "query_id": "T03",
+        "problem_model": {
+            "customer_raw_input": "信贷审批规则都写死在代码里，额度和风险政策一调整就要排研发版本。业务希望自己配置判断条件，能保留历史版本，先小流量验证，有问题还能快速退回旧规则。",
+            "industry": "金融服务",
+            "business_function": "风险管理",
+            "scenario": "业务规则配置与版本发布",
+            "pain_points": [
+                {
+                    "description": "审批规则硬编码导致政策调整依赖研发发版",
+                    "source": "explicit",
+                    "quote": "规则都写死在代码里",
+                    "confidence": null
+                },
+                {
+                    "description": "规则上线缺少小流量验证与快速回退能力",
+                    "source": "explicit",
+                    "quote": "先小流量验证，有问题还能快速退回旧规则",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "业务人员可自行配置审批条件",
+                    "source": "explicit",
+                    "quote": "业务希望自己配置判断条件",
+                    "confidence": 0.95
+                },
+                {
+                    "description": "支持规则版本管理、灰度发布和回滚",
+                    "source": "inferred",
+                    "quote": null,
+                    "confidence": 0.9
+                }
+            ],
+            "open_questions": [],
+            "constraints": [
+                {
+                    "category": "integration",
+                    "value": "需要接入现有信贷审批系统",
+                    "source": "inferred",
+                    "quote": null,
+                    "confidence": 0.75
+                }
+            ],
+            "data_assets": [
+                "现有审批规则",
+                "历史规则版本",
+                "审批结果"
+            ],
+            "current_workflow": [
+                "业务提出政策调整",
+                "研发修改代码并发布",
+                "出现问题后再次发版回退"
+            ],
+            "decision_owner": "风险政策负责人",
+            "automation_boundary": "【确定性代码】规则执行、版本管理和灰度发布。【必须人工】风险政策制定与最终审批。"
+        },
+        "relevant_doc_ids": [
+            "G2"
+        ]
+    },
+    {
+        "query_id": "T04",
+        "problem_model": {
+            "customer_raw_input": "几十家门店每周都发 Excel，运营要把表合起来，再做匹配查找、去重、公式和透视表。格式基本固定，但每周都重复做，希望能按模板自动跑。",
+            "industry": "连锁零售",
+            "business_function": "运营",
+            "scenario": "周期性表格整理自动化",
+            "pain_points": [
+                {
+                    "description": "每周重复合并大量门店表格",
+                    "source": "explicit",
+                    "quote": "每周都发 Excel，运营要把表合起来",
+                    "confidence": null
+                },
+                {
+                    "description": "匹配、去重、公式和透视操作占用人工时间",
+                    "source": "explicit",
+                    "quote": "做匹配查找、去重、公式和透视表",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "按照固定模板定时完成表格处理",
+                    "source": "explicit",
+                    "quote": "希望能按模板自动跑",
+                    "confidence": 0.95
+                }
+            ],
+            "open_questions": [],
+            "constraints": [
+                {
+                    "category": "format",
+                    "value": "输入以格式基本固定的 Excel 为主",
+                    "source": "explicit",
+                    "quote": "格式基本固定",
+                    "confidence": null
+                }
+            ],
+            "data_assets": [
+                "门店周报 Excel"
+            ],
+            "current_workflow": [
+                "收集门店表格",
+                "人工合并与清洗",
+                "制作数据透视表"
+            ],
+            "decision_owner": "运营负责人",
+            "automation_boundary": "【确定性代码】表格合并、匹配、去重、公式计算和透视汇总。【必须人工】异常数据确认。"
+        },
+        "relevant_doc_ids": [
+            "G3"
+        ]
+    },
+    {
+        "query_id": "T05",
+        "problem_model": {
+            "customer_raw_input": "公司准备贷款扩产，几家银行给的方案有等额本息、先息后本，还有手续费和不同期限，只看宣传利率根本不知道哪个实际成本更低，也想先判断大概能批多少额度。",
+            "industry": "中小企业融资",
+            "business_function": "财务",
+            "scenario": "融资方案实际成本比较",
+            "pain_points": [
+                {
+                    "description": "不同还款方式和费用导致贷款方案难以直接比较",
+                    "source": "explicit",
+                    "quote": "只看宣传利率根本不知道哪个实际成本更低",
+                    "confidence": null
+                },
+                {
+                    "description": "申请前无法预估可获批额度",
+                    "source": "explicit",
+                    "quote": "想先判断大概能批多少额度",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "统一测算不同融资方案的实际年化成本和总还款额",
+                    "source": "inferred",
+                    "quote": null,
+                    "confidence": 0.9
+                },
+                {
+                    "description": "申请前进行额度预估",
+                    "source": "explicit",
+                    "quote": "先判断大概能批多少额度",
+                    "confidence": 0.9
+                }
+            ],
+            "open_questions": [],
+            "constraints": [],
+            "data_assets": [
+                "银行贷款方案",
+                "企业经营与征信资料"
+            ],
+            "current_workflow": [
+                "收集银行方案",
+                "人工比较名义利率和还款计划"
+            ],
+            "decision_owner": "财务负责人",
+            "automation_boundary": "【确定性代码】利率、月供和总成本测算。【模型】额度初步预估。【必须人工】融资决策与合同签署。"
+        },
+        "relevant_doc_ids": [
+            "F3"
+        ]
+    },
+    {
+        "query_id": "T06",
+        "problem_model": {
+            "customer_raw_input": "员工总在群里问报销标准、请假制度和电脑故障处理，行政和 IT 每天重复回答。希望系统能从公司制度和操作手册里直接找答案，还要给出原文出处和页码。",
+            "industry": "企业服务",
+            "business_function": "行政与IT支持",
+            "scenario": "内部制度与操作知识自助查询",
+            "pain_points": [
+                {
+                    "description": "行政与 IT 重复回答高频内部问题",
+                    "source": "explicit",
+                    "quote": "每天重复回答",
+                    "confidence": null
+                },
+                {
+                    "description": "员工难以自行定位制度与手册中的答案",
+                    "source": "explicit",
+                    "quote": "从公司制度和操作手册里直接找答案",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "基于内部文档回答并提供原文出处和页码",
+                    "source": "explicit",
+                    "quote": "给出原文出处和页码",
+                    "confidence": 0.95
+                }
+            ],
+            "open_questions": [],
+            "constraints": [
+                {
+                    "category": "traceability",
+                    "value": "回答必须可追溯到原文位置",
+                    "source": "explicit",
+                    "quote": "给出原文出处和页码",
+                    "confidence": null
+                }
+            ],
+            "data_assets": [
+                "公司制度",
+                "操作手册",
+                "历史 IT 工单"
+            ],
+            "current_workflow": [
+                "员工在群里提问",
+                "行政或 IT 人工查资料并回复"
+            ],
+            "decision_owner": "行政与 IT 服务负责人",
+            "automation_boundary": "【检索与LLM】从内部知识中检索并生成带引用回答。【必须人工】高风险制度解释与复杂故障处理。"
+        },
+        "relevant_doc_ids": [
+            "D1"
+        ]
+    },
+    {
+        "query_id": "T07",
+        "problem_model": {
+            "customer_raw_input": "售后咨询来自网页、App、微信和电话，用户经常追问物流、退货和发票。希望机器人能连续对话，识别客户情绪，解决不了时转人工，并把前面的沟通内容一起交给客服。",
+            "industry": "消费服务",
+            "business_function": "客户服务",
+            "scenario": "全渠道客服自动应答与转人工",
+            "pain_points": [
+                {
+                    "description": "多渠道重复咨询占用客服人力",
+                    "source": "explicit",
+                    "quote": "用户经常追问物流、退货和发票",
+                    "confidence": null
+                },
+                {
+                    "description": "转人工时上下文容易丢失",
+                    "source": "explicit",
+                    "quote": "把前面的沟通内容一起交给客服",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "机器人支持跨渠道多轮自动应答",
+                    "source": "explicit",
+                    "quote": "机器人能连续对话",
+                    "confidence": 0.95
+                },
+                {
+                    "description": "识别情绪并携带会话摘要转人工",
+                    "source": "explicit",
+                    "quote": "识别客户情绪，解决不了时转人工",
+                    "confidence": 0.95
+                }
+            ],
+            "open_questions": [],
+            "constraints": [
+                {
+                    "category": "channels",
+                    "value": "网页、App、微信和电话",
+                    "source": "explicit",
+                    "quote": "网页、App、微信和电话",
+                    "confidence": null
+                }
+            ],
+            "data_assets": [
+                "客服知识库",
+                "历史会话",
+                "业务订单状态"
+            ],
+            "current_workflow": [
+                "客户从不同渠道咨询",
+                "人工客服重复回答并手动记录"
+            ],
+            "decision_owner": "客服运营负责人",
+            "automation_boundary": "【LLM】意图识别、多轮应答和会话摘要。【确定性代码】渠道接入与转人工路由。【必须人工】复杂投诉处理。"
+        },
+        "relevant_doc_ids": [
+            "I1"
+        ]
+    },
+    {
+        "query_id": "T08",
+        "problem_model": {
+            "customer_raw_input": "集团在多个国家有几十个法人，想把采购申请、预算、寻源、合同、订单、收货、发票和付款放到一套平台里，还要支持不同币种税制并接各地 ERP。",
+            "industry": "跨国集团",
+            "business_function": "采购管理",
+            "scenario": "多组织采购全流程统一管控",
+            "pain_points": [
+                {
+                    "description": "采购流程分散在不同法人和系统中",
+                    "source": "explicit",
+                    "quote": "多个国家有几十个法人",
+                    "confidence": null
+                },
+                {
+                    "description": "从采购申请到付款缺少统一平台",
+                    "source": "explicit",
+                    "quote": "放到一套平台里",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "统一管理采购到付款的完整流程",
+                    "source": "explicit",
+                    "quote": "采购申请、预算、寻源、合同、订单、收货、发票和付款",
+                    "confidence": 0.95
+                },
+                {
+                    "description": "支持多组织、多币种、多税制和 ERP 集成",
+                    "source": "explicit",
+                    "quote": "支持不同币种税制并接各地 ERP",
+                    "confidence": 0.95
+                }
+            ],
+            "open_questions": [],
+            "constraints": [
+                {
+                    "category": "organization",
+                    "value": "跨国家、多法人、多币种和多税制",
+                    "source": "explicit",
+                    "quote": "多个国家有几十个法人",
+                    "confidence": null
+                }
+            ],
+            "data_assets": [
+                "各法人 ERP 数据",
+                "供应商、合同、订单和发票数据"
+            ],
+            "current_workflow": [
+                "各法人分别使用本地系统",
+                "集团通过报表汇总采购情况"
+            ],
+            "decision_owner": "集团采购负责人",
+            "automation_boundary": "【确定性平台】采购全流程和集团规则统一执行。【必须人工】品类策略、供应商选择和审批决策。"
+        },
+        "relevant_doc_ids": [
+            "B2"
+        ]
+    },
+    {
+        "query_id": "T09",
+        "problem_model": {
+            "customer_raw_input": "供应商经常分批送货、分批开票，财务要把采购订单、收货记录和发票逐行核对。数量、价格或税率不一致时，希望系统自动挂起并说明差异类型。",
+            "industry": "制造业",
+            "business_function": "应付会计",
+            "scenario": "复杂收货开票场景自动核对",
+            "pain_points": [
+                {
+                    "description": "分批收货和分批开票导致人工逐行核对困难",
+                    "source": "explicit",
+                    "quote": "财务要把采购订单、收货记录和发票逐行核对",
+                    "confidence": null
+                },
+                {
+                    "description": "数量、价格和税率差异需要人工识别",
+                    "source": "explicit",
+                    "quote": "数量、价格或税率不一致",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "自动匹配订单、收货和发票并分类差异",
+                    "source": "explicit",
+                    "quote": "系统自动挂起并说明差异类型",
+                    "confidence": 0.95
+                }
+            ],
+            "open_questions": [],
+            "constraints": [
+                {
+                    "category": "workflow",
+                    "value": "必须支持部分收货与分批开票",
+                    "source": "explicit",
+                    "quote": "分批送货、分批开票",
+                    "confidence": null
+                }
+            ],
+            "data_assets": [
+                "采购订单",
+                "收货记录",
+                "供应商发票"
+            ],
+            "current_workflow": [
+                "财务逐行核对三类单据",
+                "发现差异后人工联系业务部门"
+            ],
+            "decision_owner": "应付会计负责人",
+            "automation_boundary": "【确定性代码】行级匹配、差异分类和阈值挂起。【必须人工】异常原因确认与付款审批。"
+        },
+        "relevant_doc_ids": [
+            "E2"
+        ]
+    },
+    {
+        "query_id": "T10",
+        "problem_model": {
+            "customer_raw_input": "法务想统一管理框架协议和下面的采购订单，控制不同金额合同的审批权限和用印，合同快到期时自动提醒，续签时能快速找到价格调整条款。",
+            "industry": "制造业",
+            "business_function": "法务与采购",
+            "scenario": "框架协议履约与续签管理",
+            "pain_points": [
+                {
+                    "description": "框架协议与订单之间缺少统一关联",
+                    "source": "explicit",
+                    "quote": "统一管理框架协议和下面的采购订单",
+                    "confidence": null
+                },
+                {
+                    "description": "审批、用印、到期和续签依赖人工管理",
+                    "source": "explicit",
+                    "quote": "控制不同金额合同的审批权限和用印，合同快到期时自动提醒",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "建立合同权限、用印和到期预警流程",
+                    "source": "explicit",
+                    "quote": "审批权限和用印，合同快到期时自动提醒",
+                    "confidence": 0.95
+                },
+                {
+                    "description": "续签时快速定位价格调整条款",
+                    "source": "explicit",
+                    "quote": "快速找到价格调整条款",
+                    "confidence": 0.95
+                }
+            ],
+            "open_questions": [],
+            "constraints": [],
+            "data_assets": [
+                "框架协议",
+                "采购订单",
+                "合同审批记录"
+            ],
+            "current_workflow": [
+                "法务人工维护合同文件",
+                "到期前人工检查并发起续签"
+            ],
+            "decision_owner": "法务负责人",
+            "automation_boundary": "【确定性代码】合同台账、权限、节点和到期提醒。【LLM】条款抽取与语义检索。【必须人工】法律判断和续签决策。"
+        },
+        "relevant_doc_ids": [
+            "E1"
+        ]
+    },
+    {
+        "query_id": "T11",
+        "problem_model": {
+            "customer_raw_input": "连锁餐饮每年都要复审原料供应商，营业执照、食品生产许可和检测报告靠邮件收集，过期证件容易漏掉。希望自动识别证件、提醒到期，并把整改任务跟踪到关闭。",
+            "industry": "连锁餐饮",
+            "business_function": "供应商管理",
+            "scenario": "供应商证照复审与整改闭环",
+            "pain_points": [
+                {
+                    "description": "供应商证照通过邮件人工收集",
+                    "source": "explicit",
+                    "quote": "靠邮件收集",
+                    "confidence": null
+                },
+                {
+                    "description": "过期证件容易遗漏且整改缺少闭环",
+                    "source": "explicit",
+                    "quote": "过期证件容易漏掉",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "自动采集识别证照并进行到期预警",
+                    "source": "explicit",
+                    "quote": "自动识别证件、提醒到期",
+                    "confidence": 0.95
+                },
+                {
+                    "description": "跟踪整改任务直到关闭",
+                    "source": "explicit",
+                    "quote": "把整改任务跟踪到关闭",
+                    "confidence": 0.95
+                }
+            ],
+            "open_questions": [],
+            "constraints": [
+                {
+                    "category": "compliance",
+                    "value": "涉及食品生产许可与年度供应商复审",
+                    "source": "explicit",
+                    "quote": "每年都要复审",
+                    "confidence": null
+                }
+            ],
+            "data_assets": [
+                "营业执照",
+                "食品生产许可证",
+                "检测报告",
+                "整改记录"
+            ],
+            "current_workflow": [
+                "邮件收集证照",
+                "人工登记有效期",
+                "人工催促整改"
+            ],
+            "decision_owner": "供应商质量负责人",
+            "automation_boundary": "【OCR/LLM】证照识别与信息抽取。【确定性代码】到期提醒和整改流程。【必须人工】供应商风险处置。"
+        },
+        "relevant_doc_ids": [
+            "D2"
+        ]
+    },
+    {
+        "query_id": "T12",
+        "problem_model": {
+            "customer_raw_input": "出口货物每次都要分别问船公司和货代，报价里海运费、燃油费、港杂费有效期还不同。销售想按航线和柜型马上算出完整成本，客户确认后直接下订舱单。",
+            "industry": "跨境贸易",
+            "business_function": "国际物流",
+            "scenario": "出口运输报价归集与舱位下单",
+            "pain_points": [
+                {
+                    "description": "船公司和货代报价分散且费用项复杂",
+                    "source": "explicit",
+                    "quote": "海运费、燃油费、港杂费有效期还不同",
+                    "confidence": null
+                },
+                {
+                    "description": "销售无法快速给客户计算完整运输成本",
+                    "source": "explicit",
+                    "quote": "马上算出完整成本",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "按航线和柜型实时比较完整运输成本",
+                    "source": "explicit",
+                    "quote": "按航线和柜型马上算出完整成本",
+                    "confidence": 0.95
+                },
+                {
+                    "description": "客户确认后直接完成订舱下单",
+                    "source": "explicit",
+                    "quote": "直接下订舱单",
+                    "confidence": 0.95
+                }
+            ],
+            "open_questions": [],
+            "constraints": [
+                {
+                    "category": "freshness",
+                    "value": "不同报价具有不同有效期",
+                    "source": "explicit",
+                    "quote": "有效期还不同",
+                    "confidence": null
+                }
+            ],
+            "data_assets": [
+                "船公司报价",
+                "货代报价",
+                "航线与柜型信息"
+            ],
+            "current_workflow": [
+                "逐家询价",
+                "人工汇总附加费",
+                "客户确认后人工订舱"
+            ],
+            "decision_owner": "国际物流负责人",
+            "automation_boundary": "【确定性代码】运价聚合、成本计算、有效期管理和订舱。【必须人工】承运商谈判与最终选择。"
+        },
+        "relevant_doc_ids": [
+            "F4"
+        ]
+    },
+    {
+        "query_id": "T13",
+        "problem_model": {
+            "customer_raw_input": "产线上靠工人肉眼检查外壳划痕、缺角和装配偏差，速度慢而且不同班组标准不一致。希望用相机自动发现缺陷并标出位置。",
+            "industry": "工业制造",
+            "business_function": "质量管理",
+            "scenario": "生产线视觉缺陷检测",
+            "pain_points": [
+                {
+                    "description": "人工目检速度慢",
+                    "source": "explicit",
+                    "quote": "靠工人肉眼检查",
+                    "confidence": null
+                },
+                {
+                    "description": "不同班组的缺陷判断标准不一致",
+                    "source": "explicit",
+                    "quote": "不同班组标准不一致",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "通过相机自动识别产品缺陷并定位",
+                    "source": "explicit",
+                    "quote": "用相机自动发现缺陷并标出位置",
+                    "confidence": 0.95
+                }
+            ],
+            "open_questions": [],
+            "constraints": [
+                {
+                    "category": "latency",
+                    "value": "需要满足生产线实时检测速度",
+                    "source": "inferred",
+                    "quote": null,
+                    "confidence": 0.8
+                }
+            ],
+            "data_assets": [
+                "产品外观图片",
+                "历史缺陷样本"
+            ],
+            "current_workflow": [
+                "工人逐件目检",
+                "人工记录缺陷类型"
+            ],
+            "decision_owner": "质量负责人",
+            "automation_boundary": "【视觉模型】缺陷检测与定位。【确定性代码】结果记录和告警。【必须人工】疑难缺陷复核。"
+        },
+        "relevant_doc_ids": []
+    },
+    {
+        "query_id": "T14",
+        "problem_model": {
+            "customer_raw_input": "工厂排产主要看销售拍脑袋给的预测，经常生产多了压库存，生产少了又缺货。想结合历史销量、库存和产能自动给出未来几周的生产计划。",
+            "industry": "工业制造",
+            "business_function": "计划管理",
+            "scenario": "需求预测与生产排程",
+            "pain_points": [
+                {
+                    "description": "销售预测依赖主观判断且误差较大",
+                    "source": "explicit",
+                    "quote": "销售拍脑袋给的预测",
+                    "confidence": null
+                },
+                {
+                    "description": "预测错误造成库存积压或缺货",
+                    "source": "explicit",
+                    "quote": "生产多了压库存，生产少了又缺货",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "结合销量、库存和产能生成未来生产计划",
+                    "source": "explicit",
+                    "quote": "自动给出未来几周的生产计划",
+                    "confidence": 0.95
+                }
+            ],
+            "open_questions": [],
+            "constraints": [],
+            "data_assets": [
+                "历史销量",
+                "实时库存",
+                "生产线产能与交期"
+            ],
+            "current_workflow": [
+                "销售人工预测",
+                "计划员根据经验排产"
+            ],
+            "decision_owner": "生产计划负责人",
+            "automation_boundary": "【预测模型】需求预测。【优化算法】产能约束下的排程。【必须人工】促销和突发订单调整。"
+        },
+        "relevant_doc_ids": []
+    },
+    {
+        "query_id": "T15",
+        "problem_model": {
+            "customer_raw_input": "工程项目一次会收到很多厂家的设备报价，PDF 和 Excel 模板都不一样。采购要逐个抄型号、价格和交期，再按同一种设备汇总比较。希望上传文件后自动识别字段、对齐设备并生成比较表。",
+            "industry": "工程建设",
+            "business_function": "采购",
+            "scenario": "设备报价文件解析与横向比较",
+            "pain_points": [
+                {
+                    "description": "不同厂家的 PDF 和 Excel 报价模板不统一",
+                    "source": "explicit",
+                    "quote": "PDF 和 Excel 模板都不一样",
+                    "confidence": null
+                },
+                {
+                    "description": "人工抄录字段并按设备汇总比较耗时",
+                    "source": "explicit",
+                    "quote": "逐个抄型号、价格和交期，再按同一种设备汇总比较",
+                    "confidence": null
+                }
+            ],
+            "desired_outcomes": [
+                {
+                    "description": "自动抽取型号、参数、价格和交期",
+                    "source": "explicit",
+                    "quote": "自动抽取型号、参数、价格和交期",
+                    "confidence": 0.95
+                },
+                {
+                    "description": "对齐同类设备并生成横向比较表",
+                    "source": "explicit",
+                    "quote": "对齐设备并生成比较表",
+                    "confidence": 0.95
+                }
+            ],
+            "open_questions": [],
+            "constraints": [],
+            "data_assets": [
+                "供应商设备报价文件",
+                "设备物料与参数标准"
+            ],
+            "current_workflow": [
+                "采购收集厂家报价",
+                "人工抄录型号、价格和交期",
+                "按设备人工制作比较表"
+            ],
+            "decision_owner": "项目采购负责人",
+            "automation_boundary": "【OCR/LLM】字段抽取与设备名称对齐。【确定性代码】比较表生成。【必须人工】技术符合性与中标决策。"
+        },
+        "relevant_doc_ids": [
+            "C1",
+            "H1",
+            "H2",
+            "H3"
+        ]
+    }
+]

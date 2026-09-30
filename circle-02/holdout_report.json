@@ -1,0 +1,777 @@
+{
+  "evaluation_status": "frozen_holdout_run",
+  "config": {
+    "golden": "golden_holdout.json",
+    "corpus": "corpus/solutions.json",
+    "n_documents": 23,
+    "n_queries": 15,
+    "query_builder": "v4_your_strategy",
+    "top_k": 3,
+    "embedding_model": "qwen3-embedding:0.6b",
+    "candidate_k": 10,
+    "rrf_constant": 60.0
+  },
+  "cache": {
+    "vector_hits": 23,
+    "vector_misses": 0,
+    "hybrid_vector_hits": 23,
+    "hybrid_vector_misses": 0
+  },
+  "reports": {
+    "bm25_v4": {
+      "retriever": "keyword(BM25)",
+      "mean_recall_at_k": 0.85,
+      "mean_precision_at_k": 0.3333,
+      "mrr": 0.8333,
+      "k": 3,
+      "n_queries": 15,
+      "perfect": 12,
+      "zero": 2,
+      "per_query": [
+        {
+          "query_id": "T01",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 0.5,
+          "expected": [
+            "C2"
+          ],
+          "got_top_k": [
+            "F3",
+            "C2",
+            "G2"
+          ]
+        },
+        {
+          "query_id": "T02",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "B1"
+          ],
+          "got_top_k": [
+            "B1",
+            "G3",
+            "G2"
+          ]
+        },
+        {
+          "query_id": "T03",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "G2"
+          ],
+          "got_top_k": [
+            "G2",
+            "C1",
+            "I4"
+          ]
+        },
+        {
+          "query_id": "T04",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "G3"
+          ],
+          "got_top_k": [
+            "G3",
+            "F1",
+            "B1"
+          ]
+        },
+        {
+          "query_id": "T05",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "F3"
+          ],
+          "got_top_k": [
+            "F3",
+            "F4",
+            "C2"
+          ]
+        },
+        {
+          "query_id": "T06",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "D1"
+          ],
+          "got_top_k": [
+            "D1",
+            "I1",
+            "B1"
+          ]
+        },
+        {
+          "query_id": "T07",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "I1"
+          ],
+          "got_top_k": [
+            "I1",
+            "D1",
+            "E2"
+          ]
+        },
+        {
+          "query_id": "T08",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "B2"
+          ],
+          "got_top_k": [
+            "B2",
+            "H3",
+            "E1"
+          ]
+        },
+        {
+          "query_id": "T09",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "E2"
+          ],
+          "got_top_k": [
+            "E2",
+            "B2",
+            "G1"
+          ]
+        },
+        {
+          "query_id": "T10",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "E1"
+          ],
+          "got_top_k": [
+            "E1",
+            "B2",
+            "H3"
+          ]
+        },
+        {
+          "query_id": "T11",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "D2"
+          ],
+          "got_top_k": [
+            "D2",
+            "H3",
+            "C1"
+          ]
+        },
+        {
+          "query_id": "T12",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "F4"
+          ],
+          "got_top_k": [
+            "F4",
+            "H2",
+            "H3"
+          ]
+        },
+        {
+          "query_id": "T13",
+          "recall": 0.0,
+          "precision": 0.0,
+          "rr": 0.0,
+          "expected": [],
+          "got_top_k": [
+            "I2",
+            "I4",
+            "I1"
+          ]
+        },
+        {
+          "query_id": "T14",
+          "recall": 0.0,
+          "precision": 0.0,
+          "rr": 0.0,
+          "expected": [],
+          "got_top_k": [
+            "I2",
+            "B2",
+            "I4"
+          ]
+        },
+        {
+          "query_id": "T15",
+          "recall": 0.75,
+          "precision": 1.0,
+          "rr": 1.0,
+          "expected": [
+            "C1",
+            "H1",
+            "H2",
+            "H3"
+          ],
+          "got_top_k": [
+            "C1",
+            "H2",
+            "H3"
+          ]
+        }
+      ]
+    },
+    "vector": {
+      "retriever": "vector(cosine)",
+      "mean_recall_at_k": 0.85,
+      "mean_precision_at_k": 0.3333,
+      "mrr": 0.8333,
+      "k": 3,
+      "n_queries": 15,
+      "perfect": 12,
+      "zero": 2,
+      "per_query": [
+        {
+          "query_id": "T01",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 0.5,
+          "expected": [
+            "C2"
+          ],
+          "got_top_k": [
+            "H3",
+            "C2",
+            "H1"
+          ]
+        },
+        {
+          "query_id": "T02",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "B1"
+          ],
+          "got_top_k": [
+            "B1",
+            "G1",
+            "D1"
+          ]
+        },
+        {
+          "query_id": "T03",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "G2"
+          ],
+          "got_top_k": [
+            "G2",
+            "F3",
+            "D2"
+          ]
+        },
+        {
+          "query_id": "T04",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "G3"
+          ],
+          "got_top_k": [
+            "G3",
+            "E2",
+            "C1"
+          ]
+        },
+        {
+          "query_id": "T05",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "F3"
+          ],
+          "got_top_k": [
+            "F3",
+            "C2",
+            "H1"
+          ]
+        },
+        {
+          "query_id": "T06",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "D1"
+          ],
+          "got_top_k": [
+            "D1",
+            "B1",
+            "G1"
+          ]
+        },
+        {
+          "query_id": "T07",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "I1"
+          ],
+          "got_top_k": [
+            "I1",
+            "D1",
+            "I3"
+          ]
+        },
+        {
+          "query_id": "T08",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "B2"
+          ],
+          "got_top_k": [
+            "B2",
+            "H3",
+            "E1"
+          ]
+        },
+        {
+          "query_id": "T09",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "E2"
+          ],
+          "got_top_k": [
+            "E2",
+            "G1",
+            "C1"
+          ]
+        },
+        {
+          "query_id": "T10",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "E1"
+          ],
+          "got_top_k": [
+            "E1",
+            "D2",
+            "H3"
+          ]
+        },
+        {
+          "query_id": "T11",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "D2"
+          ],
+          "got_top_k": [
+            "D2",
+            "G1",
+            "C1"
+          ]
+        },
+        {
+          "query_id": "T12",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "F4"
+          ],
+          "got_top_k": [
+            "F4",
+            "H1",
+            "C1"
+          ]
+        },
+        {
+          "query_id": "T13",
+          "recall": 0.0,
+          "precision": 0.0,
+          "rr": 0.0,
+          "expected": [],
+          "got_top_k": [
+            "I2",
+            "H3",
+            "C1"
+          ]
+        },
+        {
+          "query_id": "T14",
+          "recall": 0.0,
+          "precision": 0.0,
+          "rr": 0.0,
+          "expected": [],
+          "got_top_k": [
+            "H3",
+            "E3",
+            "C2"
+          ]
+        },
+        {
+          "query_id": "T15",
+          "recall": 0.75,
+          "precision": 1.0,
+          "rr": 1.0,
+          "expected": [
+            "C1",
+            "H1",
+            "H2",
+            "H3"
+          ],
+          "got_top_k": [
+            "C1",
+            "H1",
+            "H3"
+          ]
+        }
+      ]
+    },
+    "hybrid_rrf": {
+      "retriever": "hybrid(rrf)",
+      "mean_recall_at_k": 0.85,
+      "mean_precision_at_k": 0.3333,
+      "mrr": 0.8667,
+      "k": 3,
+      "n_queries": 15,
+      "perfect": 12,
+      "zero": 2,
+      "per_query": [
+        {
+          "query_id": "T01",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "C2"
+          ],
+          "got_top_k": [
+            "C2",
+            "H3",
+            "F3"
+          ]
+        },
+        {
+          "query_id": "T02",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "B1"
+          ],
+          "got_top_k": [
+            "B1",
+            "G1",
+            "G2"
+          ]
+        },
+        {
+          "query_id": "T03",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "G2"
+          ],
+          "got_top_k": [
+            "G2",
+            "D2",
+            "B1"
+          ]
+        },
+        {
+          "query_id": "T04",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "G3"
+          ],
+          "got_top_k": [
+            "G3",
+            "B1",
+            "E2"
+          ]
+        },
+        {
+          "query_id": "T05",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "F3"
+          ],
+          "got_top_k": [
+            "F3",
+            "C2",
+            "F4"
+          ]
+        },
+        {
+          "query_id": "T06",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "D1"
+          ],
+          "got_top_k": [
+            "D1",
+            "B1",
+            "G1"
+          ]
+        },
+        {
+          "query_id": "T07",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "I1"
+          ],
+          "got_top_k": [
+            "I1",
+            "D1",
+            "I3"
+          ]
+        },
+        {
+          "query_id": "T08",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "B2"
+          ],
+          "got_top_k": [
+            "B2",
+            "H3",
+            "E1"
+          ]
+        },
+        {
+          "query_id": "T09",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "E2"
+          ],
+          "got_top_k": [
+            "E2",
+            "G1",
+            "H3"
+          ]
+        },
+        {
+          "query_id": "T10",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "E1"
+          ],
+          "got_top_k": [
+            "E1",
+            "D2",
+            "H3"
+          ]
+        },
+        {
+          "query_id": "T11",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "D2"
+          ],
+          "got_top_k": [
+            "D2",
+            "C1",
+            "H3"
+          ]
+        },
+        {
+          "query_id": "T12",
+          "recall": 1.0,
+          "precision": 0.333,
+          "rr": 1.0,
+          "expected": [
+            "F4"
+          ],
+          "got_top_k": [
+            "F4",
+            "H2",
+            "C1"
+          ]
+        },
+        {
+          "query_id": "T13",
+          "recall": 0.0,
+          "precision": 0.0,
+          "rr": 0.0,
+          "expected": [],
+          "got_top_k": [
+            "I2",
+            "H3",
+            "F2"
+          ]
+        },
+        {
+          "query_id": "T14",
+          "recall": 0.0,
+          "precision": 0.0,
+          "rr": 0.0,
+          "expected": [],
+          "got_top_k": [
+            "H3",
+            "I4",
+            "I2"
+          ]
+        },
+        {
+          "query_id": "T15",
+          "recall": 0.75,
+          "precision": 1.0,
+          "rr": 1.0,
+          "expected": [
+            "C1",
+            "H1",
+            "H2",
+            "H3"
+          ],
+          "got_top_k": [
+            "C1",
+            "H2",
+            "H3"
+          ]
+        }
+      ]
+    }
+  },
+  "diagnostics": {
+    "vector_only_rescues": [],
+    "bm25_only_protections": [],
+    "hybrid_vs_bm25": {
+      "改善": [
+        "T01"
+      ],
+      "退化": [],
+      "持平": [
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06",
+        "T07",
+        "T08",
+        "T09",
+        "T10",
+        "T11",
+        "T12",
+        "T13",
+        "T14",
+        "T15"
+      ],
+      "混合": []
+    },
+    "hybrid_vs_vector": {
+      "改善": [
+        "T01"
+      ],
+      "退化": [],
+      "持平": [
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06",
+        "T07",
+        "T08",
+        "T09",
+        "T10",
+        "T11",
+        "T12",
+        "T13",
+        "T14",
+        "T15"
+      ],
+      "混合": []
+    },
+    "zero_positive_queries": {
+      "T13": {
+        "bm25_abstained": false,
+        "vector_abstained": false,
+        "hybrid_abstained": false,
+        "bm25_top3": [
+          "I2",
+          "I4",
+          "I1"
+        ],
+        "vector_top3": [
+          "I2",
+          "H3",
+          "C1"
+        ],
+        "hybrid_top3": [
+          "I2",
+          "H3",
+          "F2"
+        ]
+      },
+      "T14": {
+        "bm25_abstained": false,
+        "vector_abstained": false,
+        "hybrid_abstained": false,
+        "bm25_top3": [
+          "I2",
+          "B2",
+          "I4"
+        ],
+        "vector_top3": [
+          "H3",
+          "E3",
+          "C2"
+        ],
+        "hybrid_top3": [
+          "H3",
+          "I4",
+          "I2"
+        ]
+      }
+    }
+  }
+}

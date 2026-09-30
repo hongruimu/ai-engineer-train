@@ -108,6 +108,10 @@ def save_session(session: dict) -> None:
     )
 
 
+def command_name() -> str:
+    return pathlib.Path(sys.argv[0]).name
+
+
 # ─────────────────────────────────────────────────────────────
 # ① 看题
 # ─────────────────────────────────────────────────────────────
@@ -151,7 +155,7 @@ def show(session: dict) -> None:
         # 待标：看 session 里填了没
         mine = labels.get(qid)
         if mine is None:
-            print("  标注状态: ❓未填 —— 请在 .label_session.json 的 labels 里填")
+            print(f"  标注状态: ❓未填 —— 请在 {SESSION_FILE.name} 的 labels 里填")
         else:
             print(f"  你已填(待提交): {mine}")
 
@@ -164,9 +168,12 @@ def show(session: dict) -> None:
     print(f"进度：待标 {len(pending)} 条 | 已填 {len(filled)} 条 | 未填 {len(todo)} 条")
     if todo:
         print(f"  还没填: {todo}")
-        print(f"\n下一步：编辑 .label_session.json 填 labels，然后跑 python3 label.py commit")
+        print(
+            f"\n下一步：编辑 {SESSION_FILE.name} 填 labels，然后跑 "
+            f"python3 {command_name()} commit"
+        )
     else:
-        print("\n✅ 全部填完，跑 python3 label.py commit 提交")
+        print(f"\n✅ 全部填完，跑 python3 {command_name()} commit 提交")
     print("=" * 78)
 
 
@@ -181,7 +188,7 @@ def commit(session: dict) -> None:
     golden = json.loads(GOLDEN_FILE.read_text("utf-8"))
 
     if not labels:
-        print("❌ labels 是空的。先编辑 .label_session.json 填标注。")
+        print(f"❌ labels 是空的。先编辑 {SESSION_FILE.name} 填标注。")
         return
 
     # 校验：填的必须是合法 display_id
@@ -215,7 +222,10 @@ def commit(session: dict) -> None:
     GOLDEN_FILE.write_text(
         json.dumps(golden, ensure_ascii=False, indent=4), "utf-8"
     )
-    print(f"✅ 已提交 {changed} 条标注到 golden.json（display_id 已翻译为真实 doc_id）")
+    print(
+        f"✅ 已提交 {changed} 条标注到 {GOLDEN_FILE.name}"
+        "（display_id 已翻译为真实 doc_id）"
+    )
     for c in golden:
         if c["query_id"] in labels:
             print(f"     {c['query_id']}: {c['relevant_doc_ids'] or '[]零正例'}")
@@ -223,7 +233,7 @@ def commit(session: dict) -> None:
     if remaining:
         print(f"\n⏳ 还有 {len(remaining)} 条未标: {remaining}")
     else:
-        print("\n✅ 15 条全部标注完成，可以跑 python3 retrieval.py 了")
+        print(f"\n✅ {len(golden)} 条全部标注完成。")
 
 
 # ─────────────────────────────────────────────────────────────
@@ -281,7 +291,10 @@ def focus(session: dict, only: str | None = None) -> None:
         print()
         cands = CANDIDATES.get(qid, [])
         if not cands:
-            print("  （无候选——请自行用 python3 label.py 通读 23 篇确认）")
+            print(
+                f"  （无候选——请自行用 python3 {command_name()} "
+                "通读全部文档确认）"
+            )
         for real in cands:
             disp = real_to_display[real]
             shown.add(real)
@@ -292,8 +305,14 @@ def focus(session: dict, only: str | None = None) -> None:
 
     rest = len(docs) - len(shown)
     print("─" * 78)
-    print(f"其余 {rest} 篇与上述查询无主题交集，已排除（可疑时用 python3 label.py 通读）。")
-    print("填完 .label_session.json 的 labels 后跑：python3 label.py commit")
+    print(
+        f"其余 {rest} 篇与上述查询无主题交集，已排除"
+        f"（可疑时用 python3 {command_name()} 通读）。"
+    )
+    print(
+        f"填完 {SESSION_FILE.name} 的 labels 后跑："
+        f"python3 {command_name()} commit"
+    )
     print("─" * 78)
 
 
